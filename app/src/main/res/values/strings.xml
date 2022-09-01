@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">HAC配置工具</string>
     <!--配置广播的过滤器，如果在同一个手机上安装多个HAC，需要使用该配置做区分-->
-    <string name="app_config_broadcast_filter">com.huozige.lab.hac.default</string>
+    <string name="app_config_broadcast_filter">com.huozige.hac_config_default</string>
 </resources>

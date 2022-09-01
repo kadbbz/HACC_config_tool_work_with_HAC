@@ -82,50 +82,45 @@ public class StartActivity extends AppCompatActivity {
         }
     };
 
-    View.OnClickListener Reset = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            EditText urlE =  StartActivity.this.findViewById(R.id.editUrl);
-            urlE.getText().clear();
-        }
+    View.OnClickListener Reset = view -> {
+        EditText urlE =  StartActivity.this.findViewById(R.id.editUrl);
+        urlE.getText().clear();
     };
 
-    View.OnClickListener Save = new View.OnClickListener() {
+    View.OnClickListener Save = view -> {
 
-        @Override
-        public void onClick(View view) {
+        EditText urlE =  StartActivity.this.findViewById(R.id.editUrl);
+        String url = urlE.getText().toString();
 
-            EditText urlE =  StartActivity.this.findViewById(R.id.editUrl);
-            String url = urlE.getText().toString();
+        Boolean isValidated = true;
 
-            Boolean isValidated = true;
-
-            // 校验
-            if(!url.toLowerCase().startsWith("http")){
-                isValidated = false;
-                urlE.setSelection(url.length());
-                Toast.makeText(StartActivity.this,"请设置有效的Web应用地址", Toast.LENGTH_LONG).show();
-            }
-
-            // 校验通过
-            if(isValidated){
-                // 通过发送广播，配置HAC
-                Intent intent = new Intent();
-
-                intent.setAction(getString(R.string.app_config_broadcast_filter));
-
-                // 接入点
-                intent.putExtra(CONFIG_BROADCAST_EXTRA_ENTRY, url);
-                intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-
-                // 发送给HAC应用
-                sendBroadcast(intent);
-
-                Toast.makeText(StartActivity.this,"配置更新的广播已发送，点击HAC的【首页】菜单即可生效。", Toast.LENGTH_LONG).show();
-
-                Log.v(LOG_TAG,"配置更新的广播已发送，新的URL： "+url);
-            }
-
+        // 校验
+        if(!url.toLowerCase().startsWith("http")){
+            isValidated = false;
+            Toast.makeText(StartActivity.this,"请设置有效的Web应用地址", Toast.LENGTH_LONG).show();
         }
+
+        // 校验通过
+        if(isValidated){
+
+            Log.v(LOG_TAG,"校验通过，即将发送配置更新广播，新的URL： "+url);
+
+            // 通过发送广播，配置HAC
+            Intent intent = new Intent();
+
+            intent.setAction(getString(R.string.app_config_broadcast_filter));
+
+            // 接入点
+            intent.putExtra(CONFIG_BROADCAST_EXTRA_ENTRY, url);
+            intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+
+            // 发送给HAC应用
+            sendBroadcast(intent);
+
+            Toast.makeText(StartActivity.this,"配置更新的广播已发送，点击HAC的【首页】菜单即可生效。", Toast.LENGTH_LONG).show();
+
+            Log.v(LOG_TAG,"配置更新的广播已发送，Action： "+getString(R.string.app_config_broadcast_filter));
+        }
+
     };
 }
