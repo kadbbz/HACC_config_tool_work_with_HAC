@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.huozige.lab.config">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- 敏感权限 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- 适配android 11无法唤起第三方apk 注意代码段在注册表里的位置 -->
+    <queries>
+
+        <!-- &lt;!&ndash; com.blankj.utilcode SDK检测虚拟机 &ndash;&gt; -->
+        <!-- <intent> -->
+        <!-- <action android:name="android.intent.action.DIAL" /> -->
+        <!-- </intent> -->
+
+
+        <!-- &lt;!&ndash; 微信支付SDK &ndash;&gt; -->
+        <!-- <package android:name="com.tencent.mm" /> -->
+        <!-- &lt;!&ndash; 支付宝支付SDK &ndash;&gt; -->
+        <!-- <package android:name="com.eg.android.AlipayGphone" /> -->
+        <!-- &lt;!&ndash; 微博 &ndash;&gt; -->
+        <!-- <package android:name="com.sina.weibo" /> -->
+        <!-- &lt;!&ndash; QQ &ndash;&gt; -->
+        <!-- <package android:name="com.tencent.mobileqq" /> -->
+
+
+        <!-- 判断相机是否 可以使用 如果不加以下配置 那么captureIntent.resolveActivity(context.getPackageManager())==null -->
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="android.media.action.VIDEO_CAPTURE" />
+        </intent>
+    </queries>
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.HuozigeAndroidContainerConfig"
+        tools:targetApi="31">
+        <activity
+            android:name=".StartActivity"
+            android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.king.zxing.CaptureActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CaptureTheme" />
+    </application>
+
+</manifest>
