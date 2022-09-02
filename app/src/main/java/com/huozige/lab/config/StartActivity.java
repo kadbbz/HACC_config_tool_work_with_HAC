@@ -50,7 +50,7 @@ public class StartActivity extends AppCompatActivity {
             if (null != data) {
                 String resultS = CameraScan.parseScanResult(data);
                 EditText urlE = StartActivity.this.findViewById(R.id.editUrl);
-                urlE.getText().append(resultS);
+                urlE.setText(resultS);
             }
         });
     }
