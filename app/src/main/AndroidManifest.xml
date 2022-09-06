@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.huozige.lab.config">
+    package="com.huozige.lab.config"
+    android:versionName="@string/app_version_name">
 
     <uses-permission android:name="android.permission.INTERNET" />
 

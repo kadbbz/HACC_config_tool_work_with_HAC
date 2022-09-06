@@ -19,24 +19,34 @@ import com.king.zxing.CameraScan;
 import com.king.zxing.CaptureActivity;
 
 import java.util.List;
-import java.util.Locale;
 
 public class StartActivity extends AppCompatActivity {
 
     static final String LOG_TAG = "StartActivity";
     static final String CONFIG_BROADCAST_EXTRA_ENTRY = "entry";
+    static final String CONFIG_BROADCAST_ACTION = "scan_action";
+    static final String CONFIG_BROADCAST_EXTRA = "scan_extra";
 
     ActivityResultLauncher<Intent> _arcZxingLite; // 用来弹出ZXingLite扫码页面的调用器，用来代替旧版本的startActivityForResult方法。
+
+    ConfigManager _cm;
+
+    EditText _txtUrl,_txtScanAction,_txtScanExtra;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        _cm = new ConfigManager(this);
+
         setContentView(R.layout.activity_start);
+
+        _txtUrl = StartActivity.this.findViewById(R.id.txtUrl);
+        _txtScanAction = StartActivity.this.findViewById(R.id.txtAction);
+        _txtScanExtra = StartActivity.this.findViewById(R.id.txtExtra);
+
         Button cmdSave = findViewById(R.id.cmdSave);
         cmdSave.setOnClickListener(Save);
-
-        Button cmdReset = findViewById(R.id.cmdReset);
-        cmdReset.setOnClickListener(Reset);
 
         Button cmdScan = findViewById(R.id.cmdUrlQrCode);
         cmdScan.setOnClickListener(ScanForUrl);
@@ -49,11 +59,22 @@ public class StartActivity extends AppCompatActivity {
 
             if (null != data) {
                 String resultS = CameraScan.parseScanResult(data);
-                EditText urlE = StartActivity.this.findViewById(R.id.editUrl);
-                urlE.setText(resultS);
+                _txtUrl.setText(resultS);
             }
         });
+
+        // 设置初始值
+        _txtUrl.setText(_cm.GetEntry());
+        _txtScanAction.setText(_cm.GetScanAction());
+        _txtScanExtra.setText(_cm.GetScanExtra());
+
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
 
     View.OnClickListener ScanForUrl = new View.OnClickListener() {
         @Override
@@ -83,17 +104,11 @@ public class StartActivity extends AppCompatActivity {
         }
     };
 
-    View.OnClickListener Reset = view -> {
-        EditText urlE = StartActivity.this.findViewById(R.id.editUrl);
-        urlE.getText().clear();
-    };
-
     View.OnClickListener Save = view -> {
 
-        EditText urlE = StartActivity.this.findViewById(R.id.editUrl);
-        String url = urlE.getText().toString();
-
-        Boolean isValidated = true;
+        String url = _txtUrl.getText().toString();
+        String action = _txtScanAction.getText().toString();
+        String extra = _txtScanExtra.getText().toString();
 
         Log.v(LOG_TAG, "即将发送配置更新广播，新的URL： " + url);
 
@@ -102,9 +117,17 @@ public class StartActivity extends AppCompatActivity {
 
         intent.setAction(getString(R.string.app_config_broadcast_filter));
 
-        // 接入点
+        // 设置配置的值
         intent.putExtra(CONFIG_BROADCAST_EXTRA_ENTRY, url);
+        intent.putExtra(CONFIG_BROADCAST_ACTION,action);
+        intent.putExtra(CONFIG_BROADCAST_EXTRA,extra);
+
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+
+        // 保存配置
+        _cm.UpsertEntry(url);
+        _cm.UpsertScanAction(action);
+        _cm.UpsertScanExtra(extra);
 
         // 发送给HAC应用
         sendBroadcast(intent);
